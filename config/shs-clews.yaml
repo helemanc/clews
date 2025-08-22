@@ -69,7 +69,7 @@ model:
   name: "clews"
   shingling:
     len: 20             # in secs
-    hop: 20
+    hop: 10
   cqt:
     hoplen: 0.02        # in secs
     noctaves: 7
