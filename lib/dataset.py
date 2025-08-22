@@ -112,12 +112,18 @@ class Dataset(torch.utils.data.Dataset):
             s_n.append(start)
         # Load audio and create output
         output = [icl]
+        audio_paths = [] # Collect audio paths 
         for i, v, s in zip(i_n, v_n, s_n):
             fn = self.info[v]["filename"]
             x = self.get_audio(fn, start=s, length=self.audiolen)
             output += [i, x]
+            audio_paths.append(fn)  # Store the audio path
             if self.fullsongs:
-                return output
+                return output + audio_paths
+        
+        # Add audio paths to output (to match Whisper format)
+        output.extend(audio_paths)
+
         return output
 
     ###########################################################################
