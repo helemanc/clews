@@ -13,3 +13,9 @@ logs
 *.flac
 *.pt
 *.pdf
+
+
+logs_slurm
+build_container.sh
+clews_container.def
+clews_container.sif
