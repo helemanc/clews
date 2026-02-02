@@ -264,6 +264,7 @@ splits = new_split
 
 # Save
 print(f"Save {args.fn_out}")
+os.makedirs(os.path.dirname(args.fn_out), exist_ok=True)
 torch.save([info, splits], args.fn_out)
 
 # Done
