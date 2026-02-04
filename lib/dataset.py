@@ -1,15 +1,15 @@
-import sys
 import os
+import sys
+
 import torch
 
-from utils import audio_utils
 from lib import tensor_ops as tops
+from utils import audio_utils
 
 LIMIT_CLIQUES = None
 
 
 class Dataset(torch.utils.data.Dataset):
-
     def __init__(
         self,
         conf,
@@ -18,6 +18,7 @@ class Dataset(torch.utils.data.Dataset):
         fullsongs=False,
         checks=True,
         verbose=False,
+        return_paths=False,
     ):
         assert split in ("train", "valid", "test")
         # Params
@@ -69,6 +70,7 @@ class Dataset(torch.utils.data.Dataset):
             print(
                 f"  {split}: --- Found {len(self.clique)} cliques, {len(self.versions)} songs ---"
             )
+        self.return_paths = return_paths
 
     ###########################################################################
 
@@ -112,17 +114,18 @@ class Dataset(torch.utils.data.Dataset):
             s_n.append(start)
         # Load audio and create output
         output = [icl]
-        audio_paths = [] # Collect audio paths 
+        audio_paths = []  # Collect audio paths
         for i, v, s in zip(i_n, v_n, s_n):
             fn = self.info[v]["filename"]
             x = self.get_audio(fn, start=s, length=self.audiolen)
             output += [i, x]
             audio_paths.append(fn)  # Store the audio path
-            if self.fullsongs:
+            if self.fullsongs and self.return_paths:
                 return output + audio_paths
-        
-        # Add audio paths to output (to match Whisper format)
-        output.extend(audio_paths)
+
+        if self.return_paths:
+            # Add audio paths to output (to match Whisper format)
+            output.extend(audio_paths)
 
         return output
 
